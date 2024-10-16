@@ -1,0 +1,75 @@
+﻿<Window x:Class="UserControl.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:UserControl" 
+        xmlns:viewmodels="clr-namespace:UserControl.ViewModels" 
+        xmlns:convertors="clr-namespace:UserControl.Converters" 
+        d:DataContext="{d:DesignInstance Type=viewmodels:FilterViewModel}"
+        mc:Ignorable="d"
+        Title="UserControl" Height="700" Width="500">
+
+    <Window.Resources>
+        <convertors:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <StackPanel Margin="10">
+            <TextBlock Text="Search:" Grid.Row="0" Grid.Column="0" HorizontalAlignment="Center" Margin="5"/>
+
+            <TextBox Width="300" Margin="0,0,0,10" 
+                     Text="{Binding FilterText, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Button Content="Toggle Advanced Filter" Width="150" 
+                    Margin="0,0,0,10"
+                    Click="ToggleAdvancedFilter_Click"/>
+
+            <Grid Visibility="{Binding IsAdvancedFilterVisible, Converter={StaticResource BooleanToVisibilityConverter}}" Margin="20,0,20,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="210"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <TextBlock Text="Article:" Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Width="200" Grid.Row="0" Grid.Column="1" 
+                         TextChanged="ArticleFilter_TextChanged" Margin="5"/>
+
+                <TextBlock Text="Name:" Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Width="200" Grid.Row="1" Grid.Column="1" 
+                         TextChanged="NameFilter_TextChanged" Margin="5"/>
+
+                <TextBlock Text="Quantity:" Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Width="200" Grid.Row="2" Grid.Column="1" 
+                         TextChanged="QuantityFilter_TextChanged" Margin="5"/>
+
+                <TextBlock Text="Unit Price:" Grid.Row="3" Grid.Column="0" VerticalAlignment="Center" Margin="5"/>
+                <TextBox Width="200" Grid.Row="3" Grid.Column="1" 
+                         TextChanged="UnitPriceFilter_TextChanged" Margin="5"/>
+            </Grid>
+
+            <ListView ItemsSource="{Binding FilteredProducts}" MaxHeight="300">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="ID" DisplayMemberBinding="{Binding Id}" Width="50" />
+                        <GridViewColumn Header="Article" DisplayMemberBinding="{Binding Article}" Width="100"/>
+                        <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Name}" Width="90"/>
+                        <GridViewColumn Header="Quantity" DisplayMemberBinding="{Binding Quantity}" Width="100"/>
+                        <GridViewColumn Header="Unit Price" DisplayMemberBinding="{Binding UnitPrice}" Width="80"/>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <Popup Name="ErrorPopup" Placement="Center" StaysOpen="False" IsOpen="{Binding IsPopupOpen, Mode=OneWay}">
+                <Border Background="LightCoral" BorderBrush="Black" BorderThickness="1" Padding="10">
+                    <TextBlock Name="PopupMessage" Foreground="White" FontSize="14"/>
+                </Border>
+            </Popup>
+        </StackPanel>
+    </Grid>
+</Window>
